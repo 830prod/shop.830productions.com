@@ -124,7 +124,7 @@
 
       if (!checkoutUrl || !checkoutUrl.startsWith("https://")) {
         button.classList.add("is-disabled");
-        button.textContent = "Stripe Link Needed";
+        button.textContent = "Out of Stock";
         button.setAttribute("disabled", "true");
         button.setAttribute("aria-disabled", "true");
         return;
