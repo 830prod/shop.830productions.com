@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#031f33">
+  <meta
+    name="description"
+    content="830 Productions shop page with photo LUT packs, video LUT packs, a flat bill hat, and a sweatshirt with Stripe checkout."
+  >
+  <meta property="og:title" content="830 Productions Shop">
+  <meta
+    property="og:description"
+    content="Shop LUT packs and merch from 830 Productions."
+  >
+  <meta property="og:type" content="website">
+  <title>830 Productions Shop</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="site-loader" aria-hidden="true">
+    <div class="loader-mark">
+      <span>830</span>
+      <p>Productions Shop</p>
+    </div>
+  </div>
+
+  <div class="cursor-glow" aria-hidden="true"></div>
+
+  <main class="page-shell shop-page">
+    <section class="shop-section reveal" id="products">
+      <div class="shop-heading">
+        <div>
+          <p class="eyebrow">830 Productions</p>
+          <h1>Shop</h1>
+        </div>
+
+        <div class="filter-row" aria-label="Product filters">
+          <button class="filter-button active" type="button" data-filter="all">All</button>
+          <button class="filter-button" type="button" data-filter="digital">Digital</button>
+          <button class="filter-button" type="button" data-filter="merch">Merch</button>
+        </div>
+      </div>
+
+      <div class="product-grid">
+        <article class="product-card tilt-card reveal" data-category="digital">
+          <div class="product-visual visual-photo" aria-hidden="true">
+            <span class="visual-badge">PHOTO</span>
+            <div class="preset-stack">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="glow-ring"></div>
+          </div>
+
+          <div class="product-meta">
+            <span class="product-tag">Photo LUT Pack</span>
+            <span class="product-price">$25.99</span>
+          </div>
+
+          <h2>830 Signature Photo LUT Pack</h2>
+          <p>Built for portraits, editorial stills, and fast-turnaround color with the 830 finish.</p>
+          <button class="product-action" type="button" data-stripe-link-id="photo-lut-pack">Checkout</button>
+        </article>
+
+        <article class="product-card tilt-card reveal" data-category="digital">
+          <div class="product-visual visual-video" aria-hidden="true">
+            <span class="visual-badge">VIDEO</span>
+            <div class="timeline-bars">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="waveform"></div>
+          </div>
+
+          <div class="product-meta">
+            <span class="product-tag">Video LUT Pack</span>
+            <span class="product-price">$39.99</span>
+          </div>
+
+          <h2>830 Signature Video LUT Pack</h2>
+          <p>Core grading looks for reels, event recaps, and commercial edits that need consistent contrast.</p>
+          <button class="product-action" type="button" data-stripe-link-id="video-lut-pack">Checkout</button>
+        </article>
+
+        <article class="product-card tilt-card reveal" data-category="merch">
+          <div class="product-visual visual-hat" aria-hidden="true">
+            <div class="hat-shape">
+              <span class="hat-top"></span>
+              <span class="hat-brim"></span>
+              <span class="hat-mark">830</span>
+            </div>
+          </div>
+
+          <div class="product-meta">
+            <span class="product-tag">Flat Bill Hat</span>
+            <span class="product-price">$30.00</span>
+          </div>
+
+          <h2>830 Flat Bill Patch Hat</h2>
+          <p>Structured flat bill cap with a clean front patch for set days, events, and everyday wear.</p>
+          <button class="product-action" type="button" data-stripe-link-id="flat-bill-hat">Checkout</button>
+        </article>
+
+        <article class="product-card tilt-card reveal" data-category="merch">
+          <div class="product-visual visual-sweatshirt" aria-hidden="true">
+            <div class="sweatshirt-shape">
+              <span class="sleeve-left"></span>
+              <span class="sleeve-right"></span>
+              <span class="torso"></span>
+              <span class="sweatshirt-mark">830 PRODUCTIONS</span>
+            </div>
+          </div>
+
+          <div class="product-meta">
+            <span class="product-tag">Sweatshirt</span>
+            <span class="product-price">$45.00</span>
+          </div>
+
+          <h2>830 Heavyweight Sweatshirt</h2>
+          <p>Oversized fleece layer built for cold-night coverage, edit sessions, and branded crew wear.</p>
+          <button class="product-action" type="button" data-stripe-link-id="sweatshirt">Checkout</button>
+        </article>
+      </div>
+
+      <p class="stripe-status" data-stripe-status>Checking checkout status.</p>
+    </section>
+  </main>
+
+  <script src="stripe-links.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
