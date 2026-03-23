@@ -94,6 +94,86 @@
     });
   }
 
+  const carousels = document.querySelectorAll("[data-carousel]");
+
+  carousels.forEach((carousel) => {
+    const slides = Array.from(carousel.querySelectorAll("[data-carousel-slide]"));
+    const dots = Array.from(carousel.querySelectorAll("[data-carousel-dot]"));
+    const prevButton = carousel.querySelector("[data-carousel-prev]");
+    const nextButton = carousel.querySelector("[data-carousel-next]");
+
+    if (slides.length < 2) {
+      return;
+    }
+
+    let activeIndex = slides.findIndex((slide) => slide.classList.contains("is-active"));
+
+    if (activeIndex < 0) {
+      activeIndex = 0;
+    }
+
+    const renderCarousel = (index) => {
+      activeIndex = (index + slides.length) % slides.length;
+
+      slides.forEach((slide, slideIndex) => {
+        const isActive = slideIndex === activeIndex;
+        slide.classList.toggle("is-active", isActive);
+        slide.setAttribute("aria-hidden", String(!isActive));
+      });
+
+      dots.forEach((dot, dotIndex) => {
+        const isActive = dotIndex === activeIndex;
+        dot.classList.toggle("is-active", isActive);
+        dot.setAttribute("aria-pressed", String(isActive));
+      });
+    };
+
+    prevButton?.addEventListener("click", () => {
+      renderCarousel(activeIndex - 1);
+    });
+
+    nextButton?.addEventListener("click", () => {
+      renderCarousel(activeIndex + 1);
+    });
+
+    dots.forEach((dot, dotIndex) => {
+      dot.addEventListener("click", () => {
+        renderCarousel(dotIndex);
+      });
+    });
+
+    let autoAdvanceId = window.setInterval(() => {
+      renderCarousel(activeIndex + 1);
+    }, 4500);
+
+    const pauseAutoAdvance = () => {
+      window.clearInterval(autoAdvanceId);
+    };
+
+    const resumeAutoAdvance = () => {
+      pauseAutoAdvance();
+      autoAdvanceId = window.setInterval(() => {
+        renderCarousel(activeIndex + 1);
+      }, 4500);
+    };
+
+    carousel.addEventListener("pointerenter", pauseAutoAdvance);
+    carousel.addEventListener("pointerleave", resumeAutoAdvance);
+    carousel.addEventListener("focusin", pauseAutoAdvance);
+    carousel.addEventListener("focusout", (event) => {
+      const nextFocusedElement =
+        event.relatedTarget instanceof Node ? event.relatedTarget : null;
+
+      if (nextFocusedElement && carousel.contains(nextFocusedElement)) {
+        return;
+      }
+
+      resumeAutoAdvance();
+    });
+
+    renderCarousel(activeIndex);
+  });
+
   const stripeButtons = document.querySelectorAll("[data-stripe-link-id]");
   const stripeStatus = document.querySelector("[data-stripe-status]");
 
