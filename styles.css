@@ -225,6 +225,12 @@ p {
   place-items: center;
 }
 
+.visual-hat {
+  background:
+    radial-gradient(circle at 22% 20%, rgba(152, 186, 210, 0.2), transparent 26%),
+    linear-gradient(145deg, rgba(16, 41, 62, 0.94), rgba(3, 31, 51, 0.92));
+}
+
 .product-carousel {
   padding: 0;
   align-content: stretch;
@@ -334,6 +340,7 @@ p {
     linear-gradient(145deg, rgba(24, 52, 77, 0.95), rgba(3, 31, 51, 0.92));
 }
 
+.visual-hat .carousel-slide,
 .visual-sweatshirt .carousel-slide {
   padding: 1rem 1rem 3.15rem;
   object-fit: contain;
@@ -343,6 +350,7 @@ p {
   inset: auto 0.75rem 0.75rem;
 }
 
+.visual-hat .visual-badge,
 .visual-sweatshirt .visual-badge {
   backdrop-filter: blur(8px);
 }
