@@ -101,6 +101,7 @@
     const dots = Array.from(carousel.querySelectorAll("[data-carousel-dot]"));
     const prevButton = carousel.querySelector("[data-carousel-prev]");
     const nextButton = carousel.querySelector("[data-carousel-next]");
+    const label = carousel.querySelector("[data-carousel-label]");
 
     if (slides.length < 2) {
       return;
@@ -126,6 +127,10 @@
         dot.classList.toggle("is-active", isActive);
         dot.setAttribute("aria-pressed", String(isActive));
       });
+
+      if (label instanceof HTMLElement) {
+        label.textContent = slides[activeIndex]?.getAttribute("data-carousel-name") || "";
+      }
     };
 
     prevButton?.addEventListener("click", () => {
