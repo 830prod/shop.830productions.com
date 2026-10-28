@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#031F33">
+  <title>Log In | 830 Productions Shop</title>
+  <meta name="description" content="Log in or create a free 830 Productions account to check out and track your orders.">
+  <meta property="og:title" content="Log In | 830 Productions Shop">
+  <meta property="og:description" content="Log in or create a free 830 Productions account to check out and track your orders.">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="noindex">
+  <meta property="og:image" content="https://shop.830productions.com/img/products/video-lut-pack/box-midnight.jpg">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://use.typekit.net/ney4fwq.css">
+  <link rel="stylesheet" href="styles.css?v=20261028">
+  <script>
+    document.documentElement.classList.add("js");
+    // If the page script can't load, never leave content hidden.
+    window.setTimeout(() => document.querySelectorAll(".reveal").forEach((n) => n.classList.add("visible")), 2500);
+  </script>
+</head><body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="stripe-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="830 Productions Shop home">
+        <img src="img/brand/lockup-white.svg" alt="830 Productions" width="124" height="72">
+        <span class="brand-sub">Shop</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary">
+        <a class="nav-link" href="index.html#products">All products</a>
+        <a class="nav-link" href="https://830productions.com">Studio <span aria-hidden="true">&#8599;</span></a>
+        <a class="nav-cta" href="login.html" data-nav-account aria-current="page">Log In</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="auth-page">
+    <div class="wrap auth-shell">
+      <div class="auth-brand-panel">
+        <span class="label">Your Account</span>
+        <h1 class="heading">One account, every 830 site.</h1>
+        <p class="lede">Sign in to check out. The same login works on the Shop, the Assets library and everywhere else 830 Productions builds.</p>
+        <ul class="auth-brand-list">
+          <li>Check out securely</li>
+          <li>Track every order</li>
+          <li>Re-download LUT packs anytime</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <div class="auth-tabs" role="tablist">
+          <button type="button" id="tab-signin" class="is-active" role="tab" aria-selected="true">Log In</button>
+          <button type="button" id="tab-signup" role="tab" aria-selected="false">Create Account</button>
+        </div>
+
+        <form id="form-signin" novalidate>
+          <div class="form-field">
+            <label for="signin-email">Email</label>
+            <input id="signin-email" type="email" autocomplete="email" required>
+          </div>
+          <div class="form-field">
+            <label for="signin-password">Password</label>
+            <input id="signin-password" type="password" autocomplete="current-password" required>
+          </div>
+          <button type="submit" class="btn btn-primary auth-submit">Log In</button>
+        </form>
+
+        <form id="form-signup" hidden novalidate>
+          <div class="form-field">
+            <label for="signup-name">Name</label>
+            <input id="signup-name" type="text" autocomplete="name" required>
+          </div>
+          <div class="form-field">
+            <label for="signup-email">Email</label>
+            <input id="signup-email" type="email" autocomplete="email" required>
+          </div>
+          <div class="form-field">
+            <label for="signup-password">Password</label>
+            <input id="signup-password" type="password" autocomplete="new-password" minlength="6" required>
+          </div>
+          <button type="submit" class="btn btn-primary auth-submit">Create Account</button>
+        </form>
+
+        <div class="auth-divider">or</div>
+        <button type="button" id="btn-google" class="btn btn-secondary btn-google">
+          <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">
+            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.8 32.3 29.3 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.3-.1-2.7-.4-3.5z"/>
+            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 7.1 29.5 5 24 5c-7.6 0-14.2 4.3-17.7 10.7z"/>
+            <path fill="#4CAF50" d="M24 43c5.4 0 10.3-2.1 14-5.5l-6.5-5.4c-2 1.4-4.6 2.3-7.5 2.3-5.3 0-9.7-2.7-11.3-7l-6.5 5C9.7 39 16.3 43 24 43z"/>
+            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.9 2.5-2.6 4.6-4.8 6l6.5 5.4C39.9 37.1 43 31.9 43 24c0-1.3-.1-2.7-.4-3.5z"/>
+          </svg>
+          Continue with Google
+        </button>
+
+        <p class="form-status" id="auth-status" aria-live="polite"></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <img class="footer-watermark" src="img/brand/reel-harbor.svg" alt="" aria-hidden="true">
+    <div class="wrap">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="img/brand/lockup-white.svg" alt="830 Productions" width="150" height="88">
+          <p>Every frame, on brand.</p>
+        </div>
+
+        <nav class="footer-nav" aria-label="Footer">
+          <div>
+            <span class="label">Shop</span>
+            <ul>
+              <li><a href="index.html#products">All products</a></li>
+              <li><a href="video-lut-pack.html">Video LUTs</a></li>
+              <li><a href="photo-lut-pack.html">Photo LUTs</a></li>
+              <li><a href="crewneck-sweatshirt.html">Merch</a></li>
+            </ul>
+          </div>
+          <div>
+            <span class="label">Account</span>
+            <ul>
+              <li><a href="login.html" data-nav-account>Log In</a></li>
+              <li><a href="account.html">Orders</a></li>
+            </ul>
+          </div>
+          <div>
+            <span class="label">Studio</span>
+            <ul>
+              <li><a href="https://830productions.com">830productions.com</a></li>
+              <li><a href="https://830productions.com/book.html">Book a project</a></li>
+              <li><a href="mailto:830productions@gmail.com">830productions@gmail.com</a></li>
+              <li><a href="https://www.instagram.com/830_productions" target="_blank" rel="noreferrer">Instagram <span aria-hidden="true">&#8599;</span></a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer-base">
+        <p>&copy; <span data-year></span> 830 Productions</p>
+        <p>Secure checkout by Stripe</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { signIn, signUp, signInGoogle, friendlyAuthError, currentUser, isConfigured, watchNavState } from "./auth.js";
+
+    watchNavState();
+    document.querySelectorAll("[data-year]").forEach((el) => { el.textContent = String(new Date().getFullYear()); });
+
+    const params = new URLSearchParams(window.location.search);
+    // Only follow same-site page links (e.g. "hat.html?color=black").
+    const requested = params.get("next") || "";
+    const next = /^[\w-]+\.html(\?[\w=&%.-]*)?$/.test(requested) ? requested : "index.html";
+
+    currentUser().then((user) => {
+      if (user) window.location.replace(next);
+    });
+
+    const tabSignin = document.getElementById("tab-signin");
+    const tabSignup = document.getElementById("tab-signup");
+    const formSignin = document.getElementById("form-signin");
+    const formSignup = document.getElementById("form-signup");
+    const status = document.getElementById("auth-status");
+
+    function showTab(which) {
+      const isSignin = which === "signin";
+      tabSignin.classList.toggle("is-active", isSignin);
+      tabSignup.classList.toggle("is-active", !isSignin);
+      tabSignin.setAttribute("aria-selected", String(isSignin));
+      tabSignup.setAttribute("aria-selected", String(!isSignin));
+      formSignin.hidden = !isSignin;
+      formSignup.hidden = isSignin;
+      status.textContent = "";
+    }
+
+    tabSignin.addEventListener("click", () => showTab("signin"));
+    tabSignup.addEventListener("click", () => showTab("signup"));
+
+    function setStatus(message, state) {
+      status.textContent = message;
+      status.dataset.state = state || "";
+    }
+
+    if (!isConfigured()) {
+      setStatus("Firebase isn't configured yet.", "error");
+    }
+
+    formSignin.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      setStatus("Logging in...", "pending");
+      try {
+        await signIn(
+          document.getElementById("signin-email").value.trim(),
+          document.getElementById("signin-password").value
+        );
+        window.location.href = next;
+      } catch (error) {
+        setStatus(friendlyAuthError(error), "error");
+      }
+    });
+
+    formSignup.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      setStatus("Creating your account...", "pending");
+      try {
+        await signUp(
+          document.getElementById("signup-name").value.trim(),
+          document.getElementById("signup-email").value.trim(),
+          document.getElementById("signup-password").value
+        );
+        window.location.href = next;
+      } catch (error) {
+        setStatus(friendlyAuthError(error), "error");
+      }
+    });
+
+    document.getElementById("btn-google").addEventListener("click", async () => {
+      setStatus("Opening Google sign-in...", "pending");
+      try {
+        await signInGoogle();
+        window.location.href = next;
+      } catch (error) {
+        setStatus(friendlyAuthError(error), "error");
+      }
+    });
+  </script>
+</body>
+</html>

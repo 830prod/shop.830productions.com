@@ -3,220 +3,163 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#031f33">
-  <meta
-    name="description"
-    content="830 Productions shop page with photo LUT packs, video LUT packs, a flat bill hat, and a sweatshirt with Stripe checkout."
-  >
-  <meta property="og:title" content="830 Productions Shop">
-  <meta
-    property="og:description"
-    content="Shop LUT packs and merch from 830 Productions."
-  >
-  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#031F33">
   <title>830 Productions Shop</title>
-  <link rel="icon" type="image/png" sizes="128x128" href="favicon.png">
-  <link rel="shortcut icon" href="favicon.png">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="site-loader" aria-hidden="true">
-    <div class="loader-mark">
-      <span>830</span>
-      <p>Productions Shop</p>
+  <meta name="description" content="LUT packs and merch from 830 Productions. Built from the looks we use on real jobs, with secure Stripe checkout.">
+  <meta property="og:title" content="830 Productions Shop">
+  <meta property="og:description" content="LUT packs and merch from 830 Productions. Built from the looks we use on real jobs, with secure Stripe checkout.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shop.830productions.com/">
+  <meta property="og:image" content="https://shop.830productions.com/img/products/video-lut-pack/box-midnight.jpg">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://use.typekit.net/ney4fwq.css">
+  <link rel="stylesheet" href="styles.css?v=20261028">
+  <script>
+    document.documentElement.classList.add("js");
+    // If the page script can't load, never leave content hidden.
+    window.setTimeout(() => document.querySelectorAll(".reveal").forEach((n) => n.classList.add("visible")), 2500);
+  </script>
+</head><body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="stripe-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="830 Productions Shop home">
+        <img src="img/brand/lockup-white.svg" alt="830 Productions" width="124" height="72">
+        <span class="brand-sub">Shop</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary">
+        <a class="nav-link" href="index.html#products" aria-current="page">All products</a>
+        <a class="nav-link" href="https://830productions.com">Studio <span aria-hidden="true">&#8599;</span></a>
+        <a class="nav-cta" href="login.html" data-nav-account>Log In</a>
+      </nav>
     </div>
-  </div>
+  </header>
 
-  <div class="cursor-glow" aria-hidden="true"></div>
-
-  <main class="page-shell shop-page">
-    <section class="shop-section reveal" id="products">
-      <div class="shop-heading">
-        <div>
-          <p class="eyebrow">830 Productions</p>
-          <h1>Shop</h1>
+  <main id="main">
+    <section class="shop-hero">
+      <div class="wrap">
+        <div class="reveal">
+          <span class="label">830 Shop</span>
+          <h1 class="display">Our grade, in your edit.</h1>
+          <p class="lede">LUTs from our own color pipeline and the merch our crew wears on set. Made by the studio, checked out securely through Stripe.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="#products">Shop all products</a>
+            <a class="btn btn-secondary" href="video-lut-pack.html">Get the Video LUTs</a>
+          </div>
+          <ul class="hero-points">
+            <li>Instant downloads</li>
+            <li>Secure Stripe checkout</li>
+            <li>Orders saved to your account</li>
+          </ul>
         </div>
 
-        <div class="filter-row" aria-label="Product filters">
-          <button class="filter-button active" type="button" data-filter="all">All</button>
-          <button class="filter-button" type="button" data-filter="digital">Digital</button>
-          <button class="filter-button" type="button" data-filter="merch">Merch</button>
+        <a class="feature-frame reveal" href="video-lut-pack.html">
+          <div class="frame-media">
+            <img src="img/products/video-lut-pack/box-midnight.jpg" alt="830 Productions Video LUT Box" width="1200" height="1200">
+          </div>
+          <div class="title-bar">
+            <div>
+              <span class="label">Now Showing</span>
+              <strong>Signature Video LUT Pack</strong>
+            </div>
+            <span class="price">$39.99</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section section--ice on-light" id="products">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div>
+            <span class="label">The Collection</span>
+            <h2 class="heading">LUTs and merch.</h2>
+          </div>
+          <div class="filter-row" role="group" aria-label="Filter products">
+            <button class="filter-button active" type="button" data-filter="all" aria-pressed="true">All</button>
+            <button class="filter-button" type="button" data-filter="digital" aria-pressed="false">Digital</button>
+            <button class="filter-button" type="button" data-filter="merch" aria-pressed="false">Merch</button>
+          </div>
+        </div>
+
+        <div class="product-grid reveal" data-product-grid></div>
+      </div>
+    </section>
+
+    <section class="section section--harbor">
+      <div class="wrap info-grid reveal">
+        <div class="info-item">
+          <span class="num">01</span>
+          <h3>Secure checkout</h3>
+          <p>Every order goes through a Stripe-hosted checkout. Your receipt lands in your inbox as soon as payment clears.</p>
+        </div>
+        <div class="info-item">
+          <span class="num">02</span>
+          <h3>Your orders, saved</h3>
+          <p>Sign in once and every purchase shows up in your account, with LUT downloads ready to grab again.</p>
+        </div>
+        <div class="info-item">
+          <span class="num">03</span>
+          <h3>Try before you buy</h3>
+          <p>Compare LUTs side by side with <a href="https://830prod.github.io/LUTviewer/" target="_blank" rel="noreferrer">LUTviewer</a>, our free Mac app.</p>
         </div>
       </div>
-
-      <div class="product-grid">
-        <article class="product-card tilt-card reveal" data-category="digital">
-          <div class="product-visual visual-photo">
-            <img
-              class="product-photo"
-              src="Images/Lutsbox - photo.png"
-              alt="Preview of the 830 Signature Photo LUT Pack"
-            >
-            <span class="visual-badge">PHOTO</span>
-          </div>
-
-          <div class="product-meta">
-            <span class="product-tag">Photo LUT Pack</span>
-            <span class="product-price">$25.99</span>
-          </div>
-
-          <h2>830 Signature Photo LUT Pack</h2>
-          <p>Built for portraits, editorial stills, and fast-turnaround color with the 830 finish.</p>
-          <button class="product-action" type="button" data-stripe-link-id="photo-lut-pack">Checkout</button>
-        </article>
-
-        <article class="product-card tilt-card reveal" data-category="digital">
-          <div class="product-visual visual-video">
-            <img
-              class="product-photo"
-              src="Images/Lut Boz-finished.png"
-              alt="Preview of the 830 Signature Video LUT Pack"
-            >
-            <span class="visual-badge">VIDEO</span>
-          </div>
-
-          <div class="product-meta">
-            <span class="product-tag">Video LUT Pack</span>
-            <span class="product-price">$39.99</span>
-          </div>
-
-          <h2>830 Signature Video LUT Pack</h2>
-          <p>Core grading looks for reels, event recaps, and commercial edits that need consistent contrast.</p>
-          <button class="product-action" type="button" data-stripe-link-id="video-lut-pack">Checkout</button>
-        </article>
-
-        <article class="product-card tilt-card reveal" data-category="merch">
-          <div class="product-visual visual-hat product-carousel" data-carousel aria-label="830 Flat Bill Patch Hat image carousel">
-            <div class="carousel-track">
-              <img
-                class="carousel-slide is-active"
-                src="Images/hat/flat-bill-cap-embroidery.jpg"
-                alt="830 Flat Bill Patch Hat front view"
-                data-carousel-slide
-              >
-              <img
-                class="carousel-slide"
-                src="Images/hat/flat-bill-cap-embroidery (1).jpg"
-                alt="830 Flat Bill Patch Hat side detail"
-                data-carousel-slide
-              >
-              <img
-                class="carousel-slide"
-                src="Images/hat/flat-bill-cap-embroidery (2).jpg"
-                alt="830 Flat Bill Patch Hat alternate angle"
-                data-carousel-slide
-              >
-            </div>
-
-            <div class="carousel-controls">
-              <button class="carousel-button" type="button" data-carousel-prev aria-label="Show previous hat image">
-                Prev
-              </button>
-              <div class="carousel-dots" aria-label="Hat image picker">
-                <button class="carousel-dot is-active" type="button" data-carousel-dot="0" aria-label="Show hat image 1" aria-pressed="true"></button>
-                <button class="carousel-dot" type="button" data-carousel-dot="1" aria-label="Show hat image 2" aria-pressed="false"></button>
-                <button class="carousel-dot" type="button" data-carousel-dot="2" aria-label="Show hat image 3" aria-pressed="false"></button>
-              </div>
-              <button class="carousel-button" type="button" data-carousel-next aria-label="Show next hat image">
-                Next
-              </button>
-            </div>
-          </div>
-
-          <div class="product-meta">
-            <span class="product-tag">Flat Bill Hat</span>
-            <span class="product-price">$45.00</span>
-          </div>
-
-          <h2>830 Flat Bill Patch Hat</h2>
-          <p>Structured flat bill cap with a clean front patch for set days, events, and everyday wear.</p>
-          <button class="product-action" type="button" data-stripe-link-id="flat-bill-hat">Checkout</button>
-        </article>
-
-        <article class="product-card tilt-card reveal" data-category="merch">
-          <div class="product-visual visual-sweatshirt product-carousel" data-carousel aria-label="830 Heavyweight Sweatshirt color gallery">
-            <span class="visual-badge">6 COLORS</span>
-            <div class="carousel-track">
-              <img
-                class="carousel-slide is-active"
-                src="Images/Sweatshirts/Navy/830-productions-unisex-heavy-blend-crewneck-sweatshirt.jpg"
-                alt="830 Heavyweight Sweatshirt in navy"
-                data-carousel-slide
-                data-carousel-name="Navy"
-              >
-              <img
-                class="carousel-slide"
-                src="Images/Sweatshirts/Army Green/830-productions-unisex-heavy-blend-crewneck-sweatshirt.jpg"
-                alt="830 Heavyweight Sweatshirt in army green"
-                data-carousel-slide
-                data-carousel-name="Army Green"
-              >
-              <img
-                class="carousel-slide"
-                src="Images/Sweatshirts/Light Blue/830-productions-unisex-heavy-blend-crewneck-sweatshirt.jpg"
-                alt="830 Heavyweight Sweatshirt in light blue"
-                data-carousel-slide
-                data-carousel-name="Light Blue"
-              >
-              <img
-                class="carousel-slide"
-                src="Images/Sweatshirts/Pink/830-productions-unisex-heavy-blend-crewneck-sweatshirt.jpg"
-                alt="830 Heavyweight Sweatshirt in pink"
-                data-carousel-slide
-                data-carousel-name="Pink"
-              >
-              <img
-                class="carousel-slide"
-                src="Images/Sweatshirts/Saftey Pink/830-productions-unisex-heavy-blend-crewneck-sweatshirt.jpg"
-                alt="830 Heavyweight Sweatshirt in safety pink"
-                data-carousel-slide
-                data-carousel-name="Safety Pink"
-              >
-              <img
-                class="carousel-slide"
-                src="Images/Sweatshirts/Sand/830-productions-unisex-heavy-blend-crewneck-sweatshirt.jpg"
-                alt="830 Heavyweight Sweatshirt in sand"
-                data-carousel-slide
-                data-carousel-name="Sand"
-              >
-            </div>
-
-            <div class="carousel-controls">
-              <button class="carousel-button" type="button" data-carousel-prev aria-label="Show previous sweatshirt color">
-                Prev
-              </button>
-              <div class="carousel-dots" aria-label="Sweatshirt color picker">
-                <button class="carousel-dot is-active" type="button" data-carousel-dot="0" aria-label="Show navy sweatshirt" aria-pressed="true" style="--swatch: #1f3152;"></button>
-                <button class="carousel-dot" type="button" data-carousel-dot="1" aria-label="Show army green sweatshirt" aria-pressed="false" style="--swatch: #59603f;"></button>
-                <button class="carousel-dot" type="button" data-carousel-dot="2" aria-label="Show light blue sweatshirt" aria-pressed="false" style="--swatch: #9cc4ea;"></button>
-                <button class="carousel-dot" type="button" data-carousel-dot="3" aria-label="Show pink sweatshirt" aria-pressed="false" style="--swatch: #f6abc6;"></button>
-                <button class="carousel-dot" type="button" data-carousel-dot="4" aria-label="Show safety pink sweatshirt" aria-pressed="false" style="--swatch: #ff4aa5;"></button>
-                <button class="carousel-dot" type="button" data-carousel-dot="5" aria-label="Show sand sweatshirt" aria-pressed="false" style="--swatch: #d5c299;"></button>
-              </div>
-              <button class="carousel-button" type="button" data-carousel-next aria-label="Show next sweatshirt color">
-                Next
-              </button>
-            </div>
-
-            <p class="carousel-caption" data-carousel-label>Navy</p>
-          </div>
-
-          <div class="product-meta">
-            <span class="product-tag">Sweatshirt</span>
-            <span class="product-price">$45.00</span>
-          </div>
-
-          <h2>830 Heavyweight Sweatshirt</h2>
-          <p>Heavyweight crewneck with six color options for cold-night coverage, edit sessions, and branded crew wear.</p>
-          <button class="product-action" type="button" data-stripe-link-id="sweatshirt">Checkout</button>
-        </article>
-      </div>
-
-      <p class="stripe-status" data-stripe-status>Checking checkout status.</p>
     </section>
   </main>
 
-  <script src="stripe-links.js" defer></script>
-  <script src="script.js" defer></script>
+  <footer class="site-footer">
+    <img class="footer-watermark" src="img/brand/reel-harbor.svg" alt="" aria-hidden="true">
+    <div class="wrap">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="img/brand/lockup-white.svg" alt="830 Productions" width="150" height="88">
+          <p>Every frame, on brand.</p>
+        </div>
+
+        <nav class="footer-nav" aria-label="Footer">
+          <div>
+            <span class="label">Shop</span>
+            <ul>
+              <li><a href="index.html#products">All products</a></li>
+              <li><a href="video-lut-pack.html">Video LUTs</a></li>
+              <li><a href="photo-lut-pack.html">Photo LUTs</a></li>
+              <li><a href="crewneck-sweatshirt.html">Merch</a></li>
+            </ul>
+          </div>
+          <div>
+            <span class="label">Account</span>
+            <ul>
+              <li><a href="login.html" data-nav-account>Log In</a></li>
+              <li><a href="account.html">Orders</a></li>
+            </ul>
+          </div>
+          <div>
+            <span class="label">Studio</span>
+            <ul>
+              <li><a href="https://830productions.com">830productions.com</a></li>
+              <li><a href="https://830productions.com/book.html">Book a project</a></li>
+              <li><a href="mailto:830productions@gmail.com">830productions@gmail.com</a></li>
+              <li><a href="https://www.instagram.com/830_productions" target="_blank" rel="noreferrer">Instagram <span aria-hidden="true">&#8599;</span></a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer-base">
+        <p>&copy; <span data-year></span> 830 Productions</p>
+        <p>Secure checkout by Stripe</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="products.js"></script>
+  <script src="stripe-links.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
