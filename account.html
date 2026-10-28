@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#031F33">
+  <title>My Account | 830 Productions Shop</title>
+  <meta name="description" content="Your 830 Productions account and order history.">
+  <meta property="og:title" content="My Account | 830 Productions Shop">
+  <meta property="og:description" content="Your 830 Productions account and order history.">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="noindex">
+  <meta property="og:image" content="https://shop.830productions.com/img/products/video-lut-pack/box-midnight.jpg">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://use.typekit.net/ney4fwq.css">
+  <link rel="stylesheet" href="styles.css?v=20261028">
+  <script>
+    document.documentElement.classList.add("js");
+    // If the page script can't load, never leave content hidden.
+    window.setTimeout(() => document.querySelectorAll(".reveal").forEach((n) => n.classList.add("visible")), 2500);
+  </script>
+</head><body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="stripe-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="830 Productions Shop home">
+        <img src="img/brand/lockup-white.svg" alt="830 Productions" width="124" height="72">
+        <span class="brand-sub">Shop</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary">
+        <a class="nav-link" href="index.html#products">All products</a>
+        <a class="nav-link" href="https://830productions.com">Studio <span aria-hidden="true">&#8599;</span></a>
+        <a class="nav-cta" href="login.html" data-nav-account aria-current="page">Log In</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="auth-page">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="label">My Account</span>
+          <h1 class="heading">Welcome back.</h1>
+        </div>
+      </div>
+
+      <div class="account-grid">
+        <div class="panel">
+          <span class="label">Profile</span>
+          <h2>Account overview</h2>
+          <div class="account-row">
+            <span class="account-label">Email</span>
+            <span id="account-email">&mdash;</span>
+          </div>
+          <div class="account-row">
+            <span class="account-label">Member since</span>
+            <span id="account-since">&mdash;</span>
+          </div>
+          <div class="account-actions">
+            <a href="index.html" class="btn btn-primary">Back to shop</a>
+            <button type="button" id="signout-btn" class="btn btn-secondary">Sign out</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <span class="label">Order History</span>
+          <h2>Your orders</h2>
+          <div class="order-list" id="order-list">
+            <p class="empty-state">Loading your orders&hellip;</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <img class="footer-watermark" src="img/brand/reel-harbor.svg" alt="" aria-hidden="true">
+    <div class="wrap">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="img/brand/lockup-white.svg" alt="830 Productions" width="150" height="88">
+          <p>Every frame, on brand.</p>
+        </div>
+
+        <nav class="footer-nav" aria-label="Footer">
+          <div>
+            <span class="label">Shop</span>
+            <ul>
+              <li><a href="index.html#products">All products</a></li>
+              <li><a href="video-lut-pack.html">Video LUTs</a></li>
+              <li><a href="photo-lut-pack.html">Photo LUTs</a></li>
+              <li><a href="crewneck-sweatshirt.html">Merch</a></li>
+            </ul>
+          </div>
+          <div>
+            <span class="label">Account</span>
+            <ul>
+              <li><a href="login.html" data-nav-account>Log In</a></li>
+              <li><a href="account.html">Orders</a></li>
+            </ul>
+          </div>
+          <div>
+            <span class="label">Studio</span>
+            <ul>
+              <li><a href="https://830productions.com">830productions.com</a></li>
+              <li><a href="https://830productions.com/book.html">Book a project</a></li>
+              <li><a href="mailto:830productions@gmail.com">830productions@gmail.com</a></li>
+              <li><a href="https://www.instagram.com/830_productions" target="_blank" rel="noreferrer">Instagram <span aria-hidden="true">&#8599;</span></a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer-base">
+        <p>&copy; <span data-year></span> 830 Productions</p>
+        <p>Secure checkout by Stripe</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { requireAuth, getUserProfile, signOutUser, watchNavState } from "./auth.js";
+    import { collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    import { db } from "./firebase-init.js";
+
+    watchNavState();
+    document.querySelectorAll("[data-year]").forEach((el) => { el.textContent = String(new Date().getFullYear()); });
+
+    const TYPE_LABEL = { digital: "Digital", merch: "Merch" };
+
+    function renderOrders(orders) {
+      const list = document.getElementById("order-list");
+
+      if (!orders.length) {
+        list.innerHTML = '<p class="empty-state">No orders yet. Anything you buy in the <a href="index.html">shop</a> shows up here.</p>';
+        return;
+      }
+
+      list.innerHTML = "";
+      orders.forEach((order) => {
+        const item = document.createElement("div");
+        item.className = "order-item";
+        const purchasedAt = order.purchasedAt?.toDate ? order.purchasedAt.toDate() : null;
+        const dateLabel = purchasedAt
+          ? purchasedAt.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+          : "";
+
+        item.innerHTML = `
+          <div class="order-info">
+            <span class="badge">${TYPE_LABEL[order.productType] || "Order"}</span>
+            <h3>${order.productName || "830 Productions order"}</h3>
+            <p class="order-meta">${dateLabel}${order.price ? ` &middot; $${Number(order.price).toFixed(2)}` : ""}</p>
+          </div>
+          ${order.productType === "digital" && order.downloadUrl
+            ? `<a class="btn btn-secondary" href="${order.downloadUrl}" target="_blank" rel="noreferrer">Download</a>`
+            : ""}
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    (async () => {
+      const user = await requireAuth();
+      if (!user) return;
+
+      document.getElementById("account-email").textContent = user.email || "—";
+
+      const profile = await getUserProfile(user.uid);
+      const createdAt = profile?.createdAt?.toDate ? profile.createdAt.toDate() : null;
+      document.getElementById("account-since").textContent = createdAt
+        ? createdAt.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+        : "—";
+
+      try {
+        const ordersQuery = query(collection(db, "users", user.uid, "orders"), orderBy("purchasedAt", "desc"));
+        const snap = await getDocs(ordersQuery);
+        renderOrders(snap.docs.map((d) => d.data()));
+      } catch (error) {
+        document.getElementById("order-list").innerHTML =
+          '<p class="empty-state">Couldn’t load orders right now.</p>';
+      }
+    })();
+
+    document.getElementById("signout-btn").addEventListener("click", async () => {
+      await signOutUser();
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
