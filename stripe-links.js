@@ -1,5 +1,5 @@
 // Stripe Payment Links, keyed by each product's `linkId` in products.js.
-// Leave a value empty ("") to show the product as "Coming soon".
+// Leave a value empty ("") to show a priced product as "Out of Stock".
 window.STRIPE_PAYMENT_LINKS = {
   products: {
     "photo-lut-pack": "https://buy.stripe.com/14A7sFfgNc5UbOB7KgeUU02",

@@ -261,8 +261,14 @@ import { currentUser, watchNavState } from "./auth.js";
     const renderBuyState = () => {
       const url = checkoutUrlFor(product, color);
       buyButton.disabled = !url;
-      buyButton.textContent = url ? `Buy now · ${formatPrice(product.price)}` : "Coming soon";
-      buyNote.textContent = url ? product.checkoutNote : "This one isn't on sale yet. Check back soon.";
+      // No price yet = not released; a price with no Stripe link = sold out.
+      const unavailable = product.price === null ? "Coming soon" : "Out of Stock";
+      buyButton.textContent = url ? `Buy now · ${formatPrice(product.price)}` : unavailable;
+      buyNote.textContent = url
+        ? product.checkoutNote
+        : product.price === null
+          ? "This one isn't on sale yet. Check back soon."
+          : "This one is sold out right now. Check back soon.";
     };
 
     const selectColor = (index, updateUrl) => {
