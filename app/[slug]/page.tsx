@@ -20,6 +20,8 @@ export async function generateMetadata({ params }: PageProps<"/[slug]">): Promis
     title: { absolute: title },
     description,
     alternates: { canonical: `/${p.slug}` },
+    // The test product's page is for the owner only: keep it out of search results.
+    robots: p.shelf === "hidden" ? { index: false, follow: false } : undefined,
     openGraph: { title, description, url: `/${p.slug}`, images: image ? [image] : undefined },
   };
 }

@@ -5,10 +5,16 @@
 // For the shelf it also needs a cut-out (a PNG with a transparent background) in public/img/cutouts/.
 // The product page at /<slug> is built automatically.
 //
+// The LUT boxes come from lib/lut-boxes.ts; their prices and Stripe links are set further down.
+//
 // `price: null` shows "Coming soon" and keeps the buy button off.
+// `comingSoon: true` shows the price but says "Coming soon" until the product has a Stripe link.
+// `shelf: "hidden"` keeps a product off the shelf but leaves its page at /<slug> (used for the test product).
 // `hidden: true` takes a product off the site (shelf and its own page) without deleting it.
 // A color can carry its own `linkId` if it has a separate Stripe link; otherwise every color checks
 // out through the product's `linkId`.
+
+import { LUT_BOXES } from "./lut-boxes";
 
 export type ProductImage = { src: string; alt: string };
 
@@ -26,7 +32,16 @@ export type Product = {
   /** Short name under the item on the shelf. */
   short: string;
   category: "digital" | "merch";
+  /** Which shelf it stands on. `featured` stands in the hero; `hidden` is reachable only by its address. */
+  shelf: "boxes" | "studio" | "hidden";
+  featured?: boolean;
   tag: string;
+  /** For LUT boxes: the box number and what is inside. */
+  number?: string;
+  lutCount?: number;
+  luts?: { group?: string; names: string[] }[];
+  /** Priced, but not on sale until it has a Stripe link. */
+  comingSoon?: boolean;
   price: number | null;
   linkId: string;
   blurb: string;
@@ -47,13 +62,68 @@ export type Product = {
 // Stripe Payment Links, keyed by each product's `linkId`.
 // Leave a value empty ("") to show a priced product as "Out of Stock".
 export const STRIPE_PAYMENT_LINKS: Record<string, string> = {
-  "photo-lut-pack": "https://buy.stripe.com/14A7sFfgNc5UbOB7KgeUU02",
-  "video-lut-pack": "https://buy.stripe.com/aFa5kx6Kh7PEbOBfcIeUU01",
   "flat-bill-hat": "https://buy.stripe.com/14A28l1pXb1QdWJd4AeUU04",
   sweatshirt: "https://buy.stripe.com/28E5kxd8F4DsaKx3u0eUU05",
   "whiskey-glass": "",
   "desk-mat": "https://buy.stripe.com/9B66oBc4B5Hw5qdfcIeUU06",
+
+  // LUT boxes. Order is the box number (01 Wedding & Romance ... 15 Mix & Match Starter), then Complete.
+  "complete-lut-box": "https://buy.stripe.com/eVq6oB4C96LA6uhggMeUU0b",
+  "wedding-and-romance-lut-box": "https://buy.stripe.com/cNi14hfgN5HwdWJaWseUU0q",
+  "vlog-and-creator-lut-box": "https://buy.stripe.com/6oU6oB4C99XM8Cp0hOeUU0p",
+  "cinematic-film-lut-box": "https://buy.stripe.com/eVq00d3y57PEbOB6GceUU0o",
+  "soft-cinema-lut-box": "https://buy.stripe.com/8x2eV74C99XM05TggMeUU0n",
+  "dark-and-moody-lut-box": "https://buy.stripe.com/4gM7sF1pXfi6aKx9SoeUU0m",
+  "moody-tones-lut-box": "https://buy.stripe.com/4gMbIV9Wtee22e1aWseUU0l",
+  "travel-and-outdoors-lut-box": "https://buy.stripe.com/eVqcMZ7Olfi66uh7KgeUU0k",
+  "urban-and-night-lut-box": "https://buy.stripe.com/3cIcMZ1pXd9Y8Cp0hOeUU0j",
+  "noir-and-faded-lut-box": "https://buy.stripe.com/eVqfZb0lT3zo5qd5C8eUU0i",
+  "cold-and-winter-lut-box": "https://buy.stripe.com/28EfZb2u1fi67yle8EeUU0h",
+  "warm-and-golden-hour-lut-box": "https://buy.stripe.com/4gMdR3d8F5Hw2e19SoeUU0g",
+  "real-estate-and-clean-commercial-lut-box": "https://buy.stripe.com/28EdR30lT3zo6uh1lSeUU0f",
+  "color-pop-lut-box": "https://buy.stripe.com/28E5kx7Olgma8Cpc0weUU0e",
+  "everyday-collection-lut-box": "https://buy.stripe.com/5kQbIVb0x4Dsg4R2pWeUU0d",
+  "mix-and-match-starter-lut-box": "https://buy.stripe.com/fZu00d0lTfi65qd0hOeUU0c",
+
+  // Test-mode link for the unlisted /test-order page (see below). Sandbox payments only.
+  "test-order": "https://buy.stripe.com/test_aFa9AT4QCbTD19d6WM0oM00",
 };
+
+// LUT box prices: every single box costs the same, the Complete box has its own price.
+const LUT_BOX_PRICE = 5;
+const COMPLETE_LUT_BOX_PRICE = 49.99;
+export const COMPLETE_LUT_BOX = "complete-lut-box";
+
+const lutBoxProducts: Product[] = LUT_BOXES.map((box) => {
+  const complete = box.slug === COMPLETE_LUT_BOX;
+  return {
+    slug: box.slug,
+    name: complete ? box.name : `${box.name} LUT Box`,
+    short: box.name,
+    category: "digital",
+    shelf: "boxes",
+    featured: complete,
+    tag: complete ? "The full set" : `LUT Box ${box.number}`,
+    number: box.number,
+    lutCount: box.count,
+    // "Night CIty" is how the files are named; show it properly.
+    luts: box.groups.map((g) => ({ ...g, names: g.names.map((n) => n.replace("CIty", "City")) })),
+    price: complete ? COMPLETE_LUT_BOX_PRICE : LUT_BOX_PRICE,
+    linkId: box.slug,
+    blurb: box.tagline,
+    description: box.description,
+    details: [
+      `${box.count} video LUTs (.cube)`,
+      "Works in Premiere Pro, DaVinci Resolve, Final Cut Pro, CapCut and most editors",
+      "Made for standard Rec.709 footage",
+      "Instant download, saved to your account",
+    ],
+    checkoutNote: "Instant download after checkout. Your files stay in your account.",
+    cutout: `/img/cutouts/lut-boxes/${box.slug}.png`,
+    cutoutRatio: complete ? 518 / 720 : 471 / 720,
+    images: [{ src: `/img/products/lut-boxes/${box.slug}.jpg`, alt: `${box.name} LUT Box cover` }],
+  };
+});
 
 const sweatshirtColors: [string, string, string][] = [
   ["Navy", "navy", "#1f2a44"],
@@ -65,63 +135,13 @@ const sweatshirtColors: [string, string, string][] = [
 ];
 
 const ALL_PRODUCTS: Product[] = [
-  {
-    slug: "video-lut-pack",
-    name: "Signature Video LUT Pack",
-    short: "Video LUT Pack",
-    category: "digital",
-    tag: "Video LUTs",
-    price: 39.99,
-    linkId: "video-lut-pack",
-    blurb: "The core looks from our own video color pipeline.",
-    description:
-      "The grades we reach for on real jobs: brand films, event recaps and social cuts. Drop one on a clip and you have a finished starting point with consistent contrast across the edit.",
-    details: [
-      "Instant digital download",
-      "For brand films, events and social edits",
-      "Works in any editor that supports LUTs",
-      "Re-download anytime from your account",
-    ],
-    checkoutNote: "Instant download after checkout. Your files stay in your account.",
-    cutout: "/img/cutouts/video-lut-pack.png",
-    cutoutRatio: 392 / 776,
-    shelfScale: 1,
-    images: [
-      { src: "/img/products/video-lut-pack/box-midnight.jpg", alt: "830 Productions Video LUT Box on a midnight background" },
-      { src: "/img/products/video-lut-pack/box-ice.jpg", alt: "830 Productions Video LUT Box on a light background" },
-    ],
-  },
-  {
-    slug: "photo-lut-pack",
-    name: "Signature Photo LUT Pack",
-    short: "Photo LUT Pack",
-    category: "digital",
-    tag: "Photo LUTs",
-    price: 25.99,
-    linkId: "photo-lut-pack",
-    blurb: "One consistent grade for portraits, events and editorial sets.",
-    description:
-      "The looks we use to finish portrait, senior and editorial sets. Apply one across a gallery and every frame reads like it came from the same day.",
-    details: [
-      "Instant digital download",
-      "Made for portraits, events and editorial stills",
-      "Works in any photo app that supports LUTs",
-      "Re-download anytime from your account",
-    ],
-    checkoutNote: "Instant download after checkout. Your files stay in your account.",
-    cutout: "/img/cutouts/photo-lut-pack.png",
-    cutoutRatio: 392 / 776,
-    shelfScale: 1,
-    images: [
-      { src: "/img/products/photo-lut-pack/box-midnight.jpg", alt: "830 Productions Photo LUT Box on a midnight background" },
-      { src: "/img/products/photo-lut-pack/box-ice.jpg", alt: "830 Productions Photo LUT Box on a light background" },
-    ],
-  },
+  ...lutBoxProducts,
   {
     slug: "crewneck-sweatshirt",
     name: "830 Crewneck Sweatshirt",
     short: "Crewneck",
     category: "merch",
+    shelf: "studio",
     tag: "Apparel",
     price: 40.99,
     linkId: "sweatshirt",
@@ -153,6 +173,7 @@ const ALL_PRODUCTS: Product[] = [
     name: "830 Flat Bill Hat",
     short: "Flat Bill Hat",
     category: "merch",
+    shelf: "studio",
     tag: "Headwear",
     price: 45.0,
     linkId: "flat-bill-hat",
@@ -194,6 +215,7 @@ const ALL_PRODUCTS: Product[] = [
     name: "830 Rocks Glass",
     short: "Rocks Glass",
     category: "merch",
+    shelf: "studio",
     tag: "Barware",
     price: null,
     linkId: "whiskey-glass",
@@ -211,6 +233,7 @@ const ALL_PRODUCTS: Product[] = [
     name: "830 Stepped Stripe Desk Mat",
     short: "Desk Mat",
     category: "merch",
+    shelf: "studio",
     tag: "Desk",
     price: 26.99,
     linkId: "desk-mat",
@@ -227,6 +250,25 @@ const ALL_PRODUCTS: Product[] = [
       { src: "/img/products/desk-mat/table.jpg", alt: "830 stepped stripe desk mat on a wooden table" },
     ],
   },
+  {
+    slug: "test-order",
+    name: "830 Pack (test)",
+    short: "Test",
+    category: "digital",
+    shelf: "hidden",
+    tag: "Sandbox test",
+    price: 5,
+    linkId: "test-order",
+    blurb: "Not for sale. Checks that logging in, checkout and saving the order work.",
+    description:
+      "A test product that uses Stripe's sandbox, so no real money moves. Pay with the test card 4242 4242 4242 4242, any future expiry and any CVC.",
+    details: ["Stripe sandbox checkout", "Test card 4242 4242 4242 4242", "Not listed anywhere on the shop"],
+    checkoutNote: "Sandbox checkout. Use the test card 4242 4242 4242 4242, any future date and any CVC.",
+    cutout: "/img/cutouts/lut-boxes/complete-lut-box.png",
+    cutoutRatio: 518 / 720,
+    shelfScale: 1,
+    images: [],
+  },
 ];
 
 export const PRODUCTS = ALL_PRODUCTS.filter((p) => !p.hidden);
@@ -235,7 +277,14 @@ export const getProduct = (slug: string) => PRODUCTS.find((p) => p.slug === slug
 
 export const colorSlug = (name: string) => name.toLowerCase().replace(/\s+/g, "-");
 
-export const formatPrice = (price: number | null) => (typeof price === "number" ? `$${price.toFixed(2)}` : "Coming soon");
+export const formatPrice = (price: number | null) =>
+  typeof price === "number" ? (Number.isInteger(price) ? `$${price}` : `$${price.toFixed(2)}`) : "Coming soon";
+
+/** Why a product can't be bought right now, or "" when it can. */
+export function unavailableLabel(p: Product, color?: ProductColor | null) {
+  if (checkoutUrlFor(p, color)) return "";
+  return p.price === null || p.comingSoon ? "Coming soon" : "Out of Stock";
+}
 
 export const imagesFor = (p: Product, color?: ProductColor | null) => (color ? color.images : p.images);
 

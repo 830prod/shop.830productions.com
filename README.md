@@ -1,6 +1,6 @@
 # shop.830productions.com
 
-The 830 Productions Shop: LUT packs and merch on a product shelf, with Stripe checkout and the shared
+The 830 Productions Shop: LUT boxes and merch on a product shelf, with Stripe checkout and the shared
 830 Productions login (Firebase).
 
 Built with Next.js, TypeScript, Tailwind and Motion, and exported as a fully static site.

@@ -16,16 +16,7 @@ export function ShopHome({ initialSlug }: { initialSlug?: string }) {
       <SiteHeader />
       <main id="main">
         <section className="bg-[linear-gradient(to_bottom,#e7f4fd,#dcecf8)] pt-14 pb-20 sm:pt-20 sm:pb-28">
-          <div className="mx-auto max-w-[1080px] px-4 sm:px-8">
-            <div className="mb-14 max-w-[40rem] sm:mb-20">
-              <span className="label text-studio">830 Shop</span>
-              <h1 className="mt-4 font-sans text-[clamp(44px,7vw,84px)] leading-[0.98] font-light tracking-[-0.025em] text-midnight">
-                Our grade, in your edit.
-              </h1>
-              <p className="mt-5 text-[clamp(19px,1.5vw+10px,23px)] leading-normal text-studio">
-                LUTs from our own color pipeline and the merch our crew wears on set. Pick something off the shelf.
-              </p>
-            </div>
+          <div className="mx-auto max-w-[1180px] px-4 sm:px-8">
             <ProductShelf products={PRODUCTS} initialSlug={initialSlug} />
           </div>
         </section>
