@@ -6,7 +6,7 @@ import "./globals.css";
 const jost = Jost({ variable: "--font-jost", subsets: ["latin"], weight: ["300", "400", "500", "600"] });
 const crimson = Crimson_Pro({ variable: "--font-crimson", subsets: ["latin"], weight: ["400", "600"], style: ["normal", "italic"] });
 
-const description = "LUT packs and merch from 830 Productions. Built from the looks we use on real jobs, with secure Stripe checkout.";
+const description = "LUT boxes and merch from 830 Productions. Built from the looks we use on real jobs, with secure Stripe checkout.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://shop.830productions.com"),
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description,
     type: "website",
     url: "/",
-    images: ["/img/products/video-lut-pack/box-midnight.jpg"],
+    images: ["/img/products/lut-boxes/complete-lut-box.jpg"],
   },
 };
 

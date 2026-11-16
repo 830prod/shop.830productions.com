@@ -1,7 +1,8 @@
 /**
  * Product Shelf, adapted for the 830 Productions Shop from the Product Shelf by Aakash Mehra.
  *
- * Floating shelves on an Ice wall with every product standing on them as a cut-out photo. Click
+ * Floating shelves on an Ice wall with every product standing on them: the LUT boxes five to a
+ * shelf, the Complete box on its own stand beside the headline, then the merch. Click
  * one and it moves from its place on the shelf to the left of its product page, standing on a
  * white plinth. The page has the name, price, colors, a gallery of the real photos and a Buy
  * button that sends signed-in buyers to the product's Stripe Payment Link. Back, Escape or the
@@ -20,23 +21,29 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, LayoutGroup, MotionConfig, motion } from "motion/react";
 import { ChevronDown, ChevronLeft, ChevronRight, Lock, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { currentUser } from "@/lib/firebase";
+import { currentUser, useUser } from "@/lib/firebase";
 import {
   checkoutUrlFor,
   colorSlug,
   cutoutFor,
   formatPrice,
   imagesFor,
+  unavailableLabel,
   type Product,
   type ProductColor,
 } from "@/lib/products";
 
 const SPRING = { type: "spring" as const, bounce: 0, duration: 0.55 };
 const SHOP_TITLE = "830 Productions Shop";
-const SHELVES: { category: Product["category"]; label: string; title: string }[] = [
-  { category: "digital", label: "Digital", title: "LUT packs" },
-  { category: "merch", label: "Merch", title: "Worn on set" },
+const SHELVES: { id: Product["shelf"]; label: string; title: string; note?: string }[] = [
+  { id: "boxes", label: "LUT Boxes", title: "Pick a look", note: "$5 each" },
+  { id: "studio", label: "Merch", title: "Worn on set" },
 ];
+
+const btnPrimary =
+  "inline-flex h-12 items-center justify-center rounded-[2px] bg-midnight px-6 font-sans text-[16px] font-medium text-white transition-colors hover:bg-harbor focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-studio";
+const btnSecondary =
+  "inline-flex h-12 items-center justify-center rounded-[2px] border border-studio/40 px-6 font-sans text-[16px] font-medium text-midnight transition-colors hover:border-midnight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-studio";
 
 export type ProductShelfProps = {
   products: Product[];
@@ -105,6 +112,33 @@ export function ProductShelf({ products, initialSlug, className }: ProductShelfP
     };
   }, [open]);
 
+  // Jump straight from one product page to another (the "get them all" link on a box).
+  const switchTo = (slug: string) => {
+    window.history.replaceState(window.history.state, "", `/${slug}`);
+    setOpenSlug(slug);
+  };
+
+  const featured = products.find((p) => p.featured) ?? null;
+
+  /** The product standing in its place, or an empty space of the same size while its page is open. */
+  const standing = (p: Product, lazy: boolean) =>
+    openSlug === p.slug ? (
+      <div className="max-w-full" style={{ height: `${(p.shelfScale ?? 1) * 100}%`, aspectRatio: p.cutoutRatio }} />
+    ) : (
+      <motion.button
+        layoutId={`product-${p.slug}`}
+        type="button"
+        onClick={() => openProduct(p.slug)}
+        aria-label={`${p.name}, ${formatPrice(p.price)}`}
+        transition={SPRING}
+        whileHover={{ y: -5 }}
+        className="relative max-w-full shrink-0 cursor-pointer rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-studio focus-visible:ring-offset-4 focus-visible:ring-offset-ice"
+        style={{ height: `${(p.shelfScale ?? 1) * 100}%`, aspectRatio: p.cutoutRatio }}
+      >
+        <Cutout p={p} color={colorOf(p)} lazy={lazy} />
+      </motion.button>
+    );
+
   const pickColor = (p: Product, i: number) => {
     setColors((m) => ({ ...m, [p.slug]: i }));
     const c = p.colors?.[i];
@@ -115,52 +149,77 @@ export function ProductShelf({ products, initialSlug, className }: ProductShelfP
     <MotionConfig reducedMotion="user">
       <LayoutGroup>
         <div className={cn("relative w-full", className)}>
+          {/* headline, with the Complete box on its own stand */}
+          <div className="grid items-center gap-x-10 gap-y-12 pb-16 md:grid-cols-[1.15fr_0.85fr] md:pb-24">
+            <div>
+              <span className="label text-studio">830 Shop</span>
+              <h1 className="mt-4 font-sans text-[clamp(44px,6.6vw,84px)] leading-[0.98] font-light tracking-[-0.025em] text-midnight">
+                Our grade, in your edit.
+              </h1>
+              <p className="mt-5 max-w-[32em] text-[clamp(19px,1.5vw+10px,23px)] leading-normal text-studio">
+                LUT boxes from our own color pipeline and the merch our crew wears on set. Pick something off the shelf.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a href="#shelf-boxes" className={btnPrimary}>
+                  Browse the LUT boxes
+                </a>
+                <a href="#shelf-studio" className={btnSecondary}>
+                  Merch
+                </a>
+              </div>
+            </div>
+
+            {featured && (
+              <div className="mx-auto w-full max-w-[400px]">
+                <div className="relative z-10 flex h-[clamp(230px,30vw,340px)] items-end justify-center">{standing(featured, false)}</div>
+                <Shelf standalone />
+                <div className="mt-6 flex items-end justify-between gap-4">
+                  <div>
+                    <span className="label text-studio">{featured.tag}</span>
+                    <div className="mt-1.5 font-sans text-[22px] leading-tight text-midnight">{featured.name}</div>
+                    <div className="mt-1 text-[17px] text-studio">
+                      {featured.lutCount ? `${featured.lutCount} video LUTs. ` : ""}
+                      <span className="italic">{featured.blurb}</span>
+                    </div>
+                  </div>
+                  <button type="button" onClick={() => openProduct(featured.slug)} className={cn(btnSecondary, "h-11 shrink-0 px-5 text-[15px]")}>
+                    {featured.price === null ? "View" : formatPrice(featured.price)}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           {SHELVES.map((shelf) => {
-            const row = products.filter((p) => p.category === shelf.category);
+            const row = products.filter((p) => p.shelf === shelf.id && !p.featured);
             if (!row.length) return null;
             return (
-              <section key={shelf.category} aria-labelledby={`shelf-${shelf.category}`} className="relative mb-16 last:mb-0 sm:mb-20">
-                <h2 id={`shelf-${shelf.category}`} className="mb-6 flex items-baseline gap-3 px-1">
-                  <span className="label text-studio">{shelf.label}</span>
-                  <span className="font-sans text-[22px] font-light tracking-[-0.01em] text-midnight sm:text-[26px]">{shelf.title}</span>
-                </h2>
-                <div className="relative z-10 flex h-[clamp(150px,28vw,260px)] items-end justify-center gap-4 px-2 sm:gap-14 sm:px-10">
-                  {row.map((p) => (
-                    <div key={p.slug} className="flex h-full w-[30%] max-w-[240px] items-end justify-center">
-                      {openSlug === p.slug ? (
-                        <div style={{ height: `${(p.shelfScale ?? 1) * 100}%`, aspectRatio: p.cutoutRatio }} />
-                      ) : (
-                        <motion.button
-                          layoutId={`product-${p.slug}`}
-                          type="button"
-                          onClick={() => openProduct(p.slug)}
-                          aria-label={`${p.name}, ${formatPrice(p.price)}`}
-                          transition={SPRING}
-                          whileHover={{ y: -4 }}
-                          className="relative max-w-[min(100%+2rem,240px)] shrink-0 cursor-pointer rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-studio focus-visible:ring-offset-4 focus-visible:ring-offset-ice"
-                          style={{ height: `${(p.shelfScale ?? 1) * 100}%`, aspectRatio: p.cutoutRatio }}
-                        >
-                          <Cutout p={p} color={colorOf(p)} lazy={shelf.category !== "digital"} />
-                        </motion.button>
-                      )}
-                    </div>
-                  ))}
+              <section key={shelf.id} id={`shelf-${shelf.id}`} aria-labelledby={`shelf-${shelf.id}-title`} className="relative mb-10 scroll-mt-24 last:mb-0 sm:mb-14">
+                <div className="mb-8 flex items-baseline justify-between gap-4 border-b border-studio/15 px-1 pb-4">
+                  <h2 id={`shelf-${shelf.id}-title`} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span className="label text-studio">{shelf.label}</span>
+                    <span className="font-sans text-[22px] font-light tracking-[-0.01em] text-midnight sm:text-[28px]">{shelf.title}</span>
+                  </h2>
+                  {shelf.note && <span className="shrink-0 font-sans text-[15px] font-medium text-studio">{shelf.note}</span>}
                 </div>
-                <Shelf />
-                <div className="mt-5 flex justify-center gap-4 px-2 sm:gap-14 sm:px-10">
-                  {row.map((p) => (
-                    <div key={p.slug} className="w-[30%] max-w-[240px] text-center">
+                {/* Each product brings its own length of shelf; side by side they join into one plank per row. */}
+                <div className="flex flex-wrap justify-center">
+                  {row.map((p, i) => (
+                    <div key={p.slug} className="flex w-1/3 min-w-0 flex-col lg:w-1/5">
+                      <div className="relative z-10 flex h-[clamp(128px,25vw,220px)] items-end justify-center px-2">{standing(p, i >= 5)}</div>
+                      <Shelf />
                       <button
                         type="button"
                         onClick={() => openProduct(p.slug)}
                         tabIndex={-1}
-                        className="font-sans text-[14px] leading-tight font-medium text-midnight sm:text-[16px]"
+                        className="block w-full cursor-pointer px-2 pt-5 pb-12 text-center"
                       >
-                        {p.short}
+                        {p.number && <span className="mb-1.5 block font-sans text-[11px] font-semibold tracking-[0.24em] text-steel">{p.number}</span>}
+                        <span className="block font-sans text-[14px] leading-tight font-medium text-balance text-midnight sm:text-[16px]">{p.short}</span>
+                        <span className="mt-1 block text-[15px] text-studio tabular-nums sm:text-[16px]">
+                          {p.lutCount ? `${p.lutCount} LUTs` : formatPrice(p.price)}
+                        </span>
                       </button>
-                      <div className={cn("mt-1 text-[15px] tabular-nums sm:text-[17px]", p.price === null ? "text-steel italic" : "text-studio")}>
-                        {formatPrice(p.price)}
-                      </div>
                     </div>
                   ))}
                 </div>
@@ -178,6 +237,8 @@ export function ProductShelf({ products, initialSlug, className }: ProductShelfP
               colorIndex={colors[open.slug] ?? 0}
               onColor={(i) => pickColor(open, i)}
               onClose={close}
+              bundle={open.shelf === "boxes" && !open.featured ? featured : null}
+              onSwitch={switchTo}
             />
           )}
         </AnimatePresence>
@@ -205,13 +266,25 @@ function Cutout({ p, color, lazy, priority }: { p: Product; color: ProductColor 
   );
 }
 
-/** Floating white shelf: lit top, crisp front edge, soft shadow on the Ice wall. */
-function Shelf() {
+/**
+ * Floating white shelf: lit top, crisp front edge, soft shadow on the Ice wall. On the wall each
+ * product has its own length and they join edge to edge; `standalone` is a single short shelf.
+ */
+function Shelf({ standalone }: { standalone?: boolean }) {
   return (
     <div aria-hidden className="relative -mt-[4px] h-[16px]">
-      <div className="absolute inset-x-0 top-0 h-[8px] bg-[linear-gradient(to_bottom,#dde9f2,#fbfdff)]" />
-      <div className="absolute inset-x-0 top-[8px] h-[8px] bg-[linear-gradient(to_bottom,#ffffff,#e4eef5)] shadow-[0_1px_0_rgba(3,31,51,0.06)]" />
-      <div className="absolute inset-x-[2%] top-[16px] h-[38px] bg-[radial-gradient(50%_100%_at_50%_0%,rgba(3,31,51,0.16),transparent)]" />
+      <div className={cn("absolute inset-x-0 top-0 h-[8px] bg-[linear-gradient(to_bottom,#dde9f2,#fbfdff)]", standalone && "rounded-t-[2px]")} />
+      <div
+        className={cn(
+          "absolute inset-x-0 top-[8px] h-[8px] bg-[linear-gradient(to_bottom,#ffffff,#e4eef5)] shadow-[0_1px_0_rgba(3,31,51,0.06)]",
+          standalone && "rounded-b-[2px]",
+        )}
+      />
+      {standalone ? (
+        <div className="absolute inset-x-[2%] top-[16px] h-[38px] bg-[radial-gradient(50%_100%_at_50%_0%,rgba(3,31,51,0.18),transparent)]" />
+      ) : (
+        <div className="absolute inset-x-0 top-[16px] h-[22px] bg-[linear-gradient(to_bottom,rgba(3,31,51,0.11),transparent)]" />
+      )}
     </div>
   );
 }
@@ -222,15 +295,21 @@ function ProductPage({
   colorIndex,
   onColor,
   onClose,
+  bundle,
+  onSwitch,
 }: {
   p: Product;
   color: ProductColor | null;
   colorIndex: number;
   onColor: (i: number) => void;
   onClose: () => void;
+  /** The box that holds every look, offered on the single boxes. */
+  bundle: Product | null;
+  onSwitch: (slug: string) => void;
 }) {
   const router = useRouter();
-  const [section, setSection] = useState<string | null>("Details");
+  const user = useUser();
+  const [section, setSection] = useState<string | null>(p.luts ? "What's inside" : "Details");
   const [photo, setPhoto] = useState<number | null>(null);
   const [pending, setPending] = useState(false);
   const closeRef = useRef<HTMLButtonElement | null>(null);
@@ -271,6 +350,46 @@ function ProductPage({
   };
 
   const sections: [string, ReactNode][] = [
+    ...(p.luts
+      ? ([
+          [
+            "What's inside",
+            <div key="w" className="space-y-5">
+              {p.luts.map((g) => (
+                <div key={g.group ?? "all"}>
+                  {g.group && (
+                    <div className="mb-2 font-sans text-[13px] font-semibold tracking-[0.14em] text-studio uppercase">
+                      {g.group} <span className="font-normal text-steel">· {g.names.length}</span>
+                    </div>
+                  )}
+                  <ul className="flex flex-wrap gap-1.5">
+                    {g.names.map((n) => (
+                      <li key={n} className="rounded-[2px] bg-white px-2.5 py-1 font-sans text-[14px] text-midnight ring-1 ring-studio/15">
+                        {n}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>,
+          ],
+          [
+            "How to use",
+            <div key="h" className="space-y-3">
+              <ul className="list-disc space-y-1 pl-5 marker:text-steel">
+                <li>Premiere Pro: Lumetri Color, Creative, Look, Browse, then pick a .cube file.</li>
+                <li>DaVinci Resolve: Project Settings, Color Management, Open LUT Folder. Copy the files in and Update Lists.</li>
+                <li>Final Cut Pro: Effects, Custom LUT, Choose Custom LUT.</li>
+                <li>CapCut, LumaFusion and most editors: import the .cube as a LUT or filter.</li>
+              </ul>
+              <p>
+                These are creative looks for standard (Rec.709) footage. If you shoot LOG, convert to Rec.709 first. Fix exposure and white
+                balance before the LUT, then dial the intensity to taste. 50 to 80% is a good start.
+              </p>
+            </div>,
+          ],
+        ] as [string, ReactNode][])
+      : []),
     [
       "Details",
       <ul key="d" className="list-disc space-y-1 pl-5 marker:text-steel">
@@ -302,7 +421,7 @@ function ProductPage({
       : []),
   ];
 
-  const unavailable = p.price === null ? "Coming soon" : "Out of Stock";
+  const unavailable = unavailableLabel(p, color);
 
   return (
     <motion.div role="dialog" aria-modal="true" aria-labelledby={`title-${p.slug}`} className="fixed inset-x-0 top-[72px] bottom-0 z-20 overflow-y-auto overscroll-contain">
@@ -421,12 +540,17 @@ function ProductPage({
               disabled={!checkoutUrl || pending}
               className="h-14 w-full rounded-[2px] bg-midnight font-sans text-[17px] font-medium text-white transition-[background-color,transform] duration-100 hover:bg-harbor active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-studio disabled:cursor-not-allowed disabled:bg-steel/50 disabled:active:scale-100"
             >
-              <span aria-live="polite">{!checkoutUrl ? unavailable : pending ? "Opening checkout…" : `Buy now · ${formatPrice(p.price)}`}</span>
+              <span aria-live="polite">{!checkoutUrl ? unavailable : pending ? "Opening checkout…" : `${user === null ? "Log in to buy" : "Buy now"} · ${formatPrice(p.price)}`}</span>
             </button>
+            {checkoutUrl && user === null && (
+              <p className="mt-3 font-sans text-[14px] text-midnight">
+                You need a free 830 account to check out, so your order and downloads are saved to it. You&apos;ll come straight back here.
+              </p>
+            )}
             <p className="mt-3 text-[16px] text-studio">
               {checkoutUrl
                 ? p.checkoutNote
-                : p.price === null
+                : unavailable === "Coming soon"
                   ? "This one isn't on sale yet. Check back soon."
                   : "This one is sold out right now. Check back soon."}
             </p>
@@ -434,6 +558,24 @@ function ProductPage({
               <Lock className="size-3.5" strokeWidth={1.8} /> Secure checkout by Stripe
             </span>
           </div>
+
+          {bundle && (
+            <button
+              type="button"
+              onClick={() => onSwitch(bundle.slug)}
+              className="mt-6 flex w-full items-center gap-4 rounded-[2px] bg-white p-3 pr-4 text-left ring-1 ring-studio/15 transition-shadow hover:ring-studio/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-studio"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={bundle.cutout} alt="" className="h-16 w-auto shrink-0" />
+              <span className="min-w-0 flex-1">
+                <span className="block font-sans text-[16px] font-medium">Want every look?</span>
+                <span className="block text-[16px] text-studio">
+                  {bundle.name} has all {bundle.lutCount} in one download.
+                </span>
+              </span>
+              <ChevronRight className="size-5 shrink-0 text-studio" />
+            </button>
+          )}
 
           <div className="mt-8 border-t border-studio/20">
             {sections.map(([title, body]) => {
@@ -477,7 +619,7 @@ function ProductPage({
               exit={{ opacity: 0, y: 12 }}
               transition={{ ...SPRING, delay: 0.08 }}
             >
-              <span className="label text-studio">Photos</span>
+              <span className="label text-studio">{p.luts ? "Cover" : "Photos"}</span>
               <div className="mt-3 grid grid-cols-4 gap-2.5">
                 {photos.map((img, i) => (
                   <button

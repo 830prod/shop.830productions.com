@@ -16,9 +16,9 @@ export function SiteFooter() {
           <nav aria-label="Footer" className="grid grid-cols-2 gap-8 text-[17px] sm:grid-cols-3">
             <FooterCol title="Shop">
               <Link href="/">All products</Link>
-              <Link href="/video-lut-pack">Video LUTs</Link>
-              <Link href="/photo-lut-pack">Photo LUTs</Link>
-              <Link href="/crewneck-sweatshirt">Merch</Link>
+              <Link href="/complete-lut-box">Complete LUT Box</Link>
+              <Link href="/#shelf-boxes">LUT boxes</Link>
+              <Link href="/#shelf-studio">Merch</Link>
             </FooterCol>
             <FooterCol title="Account">
               <Link href="/login">Log In</Link>
